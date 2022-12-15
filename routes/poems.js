@@ -1,6 +1,6 @@
 import express from "express";
 const poemsRouter = express.Router();
-import {getPoems, addNewPoem} from "../models/poems.js"
+import {getPoems, addNewPoem, deletePoem} from "../models/poems.js"
 
 poemsRouter.get("/", async function (req, res) {
     const result = await getPoems();
@@ -9,6 +9,11 @@ poemsRouter.get("/", async function (req, res) {
 
 poemsRouter.post("/", async function (req, res) {
     const result = await addNewPoem(req.body);
+    res.json({success: true, payload: result})
+})
+
+poemsRouter.delete("/:id", async function (req, res) {
+    const result = await deletePoem(req.params.id);
     res.json({success: true, payload: result})
 })
 
