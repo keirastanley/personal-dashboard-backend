@@ -1,9 +1,14 @@
 import express from "express";
 const poemsRouter = express.Router();
-import {getPoems, addNewPoem, deletePoem} from "../models/poems.js"
+import {getPoems, getPoemById, addNewPoem, deletePoem} from "../services/poems.js"
 
 poemsRouter.get("/", async function (req, res) {
     const result = await getPoems();
+    res.json({success: true, payload: result})
+})
+
+poemsRouter.get("/:id", async function (req, res) {
+    const result = await getPoemById(req.params.id);
     res.json({success: true, payload: result})
 })
 
