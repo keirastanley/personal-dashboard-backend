@@ -1,9 +1,15 @@
 import express from "express";
 const artRouter = express.Router();
-import {getArt, addNewItem, deleteItem} from "../services/art.js"
+import {getArt, getItemsFromGallery, addNewItem, deleteItem} from "../services/art.js"
+
+//Get from Met Museum
+// artRouter.get("/", async function (req, res) {
+//     const result = await getArt();
+//     res.json({success: true, payload: result})
+// })
 
 artRouter.get("/", async function (req, res) {
-    const result = await getArt();
+    const result = await getItemsFromGallery();
     res.json({success: true, payload: result})
 })
 

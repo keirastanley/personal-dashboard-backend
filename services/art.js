@@ -81,6 +81,12 @@ import artRouter from "../routes/art.js";
     return items;
     }
 
+    export async function getItemsFromGallery(){
+        const result = await query('SELECT * FROM art;');
+        const items = await result.json();
+        return items[0].rows;
+    }
+
 export async function addNewItem() {
     const items = [];
     for (let i = 0; i < impressionismIds.length; i++) {
