@@ -81,11 +81,10 @@ import artRouter from "../routes/art.js";
     return items;
     }
 
-    export async function getItemsFromGallery(){
-        const result = await query('SELECT * FROM art;');
-        const items = await result.json();
-        return items[0].rows;
-    }
+export async function getItemsFromGallery(){
+    const result = await query('SELECT * FROM art;');
+    return result.rows;
+}
 
 export async function addNewItem() {
     const items = [];
