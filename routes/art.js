@@ -1,6 +1,6 @@
 import express from "express";
 const artRouter = express.Router();
-import {getArt, getItemsFromGallery, addNewItem, deleteItem} from "../services/art.js"
+import {getArt, getItemById, getItemsFromGallery, addNewItem, deleteItem} from "../services/art.js"
 
 //Get from Met Museum
 // artRouter.get("/", async function (req, res) {
@@ -10,6 +10,11 @@ import {getArt, getItemsFromGallery, addNewItem, deleteItem} from "../services/a
 
 artRouter.get("/", async function (req, res) {
     const result = await getItemsFromGallery();
+    res.json({success: true, payload: result})
+})
+
+artRouter.get("/:id", async function (req, res) {
+    const result = await getItemById(req.params.id);
     res.json({success: true, payload: result})
 })
 
