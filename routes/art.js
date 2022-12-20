@@ -24,7 +24,7 @@ artRouter.post("/", async function (req, res) {
 })
 
 artRouter.delete("/", async function (req, res) {
-    const result = await deleteItem();
+    const result = await deleteItem(req.params.id);
     res.json({success: true, payload: result})
 })
 export default artRouter;

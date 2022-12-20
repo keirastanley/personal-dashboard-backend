@@ -2837,43 +2837,40 @@
     437454, 436568, 436670, 888673,
     ];
 
-    //Filter ids by
-        //Duplication
-        const resultIds = resultIdsUnfiltered.filter((el, ind, arr) => arr.indexOf(el) === arr.lastIndexOf(el))
-    
-        export async function addNewItem() {
-            const items = [];
-            for (let i = 0; i < resultIds.length; i++) {
-                const result = await fetch(
-                `https://collectionapi.metmuseum.org/public/collection/v1/objects/${resultIds[i]}`
-                );
-                const data = await result.json();
-                if (
+    //Filter ids by duplication
+    const resultIds = resultIdsUnfiltered.filter((el, ind, arr) => arr.indexOf(el) === arr.lastIndexOf(el))
+
+    export async function addNewItem() {
+        const items = [];
+        for (let i = 0; i < resultIds.length; i++) {
+            const result = await fetch(
+            `https://collectionapi.metmuseum.org/public/collection/v1/objects/${resultIds[i]}`
+            );
+            const data = await result.json();
+            if (
                 data.message ||
                 data.constituents === null ||
                 data.primaryImage === "" ||
                 data.primaryImage === undefined
-                ) {
-                i++;
-                } else {
-                await query(
-                    "INSERT INTO art(title, artist, medium, year, src, alt, tags) VALUES ($1, $2, $3, $4, $5, $6, $7);",
-                    [
-                    data.title,
-                    data.constituents[0].name,
-                    data.medium,
-                    data.objectDate,
-                    data.primaryImage,
-                    data.title,
-                    data.tags,
-                    ]
-                );
-                }
+            ) {
+            i++;
+            } else {
+            await query(
+                "INSERT INTO art(title, artist, medium, year, src, alt, tags) VALUES ($1, $2, $3, $4, $5, $6, $7);",
+                [
+                data.title,
+                data.constituents[0].name,
+                data.medium,
+                data.objectDate,
+                data.primaryImage,
+                data.title,
+                data.tags,
+                ]
+            );
             }
-            return items;
         }
-
-
+        return items;
+    }
 
     export async function getArt() {
     // const randomNumber = Math.floor(Math.random() * monetIds.length)
@@ -2885,53 +2882,46 @@
     // );
     // const data = await result.json();
     // return data;
-
-    const items = [];
-    for (let i = 0; i < monetIds.length; i++) {
-        const result = await fetch(
-        `https://collectionapi.metmuseum.org/public/collection/v1/objects/${monetIds[i]}`
-        );
-        const data = await result.json();
-        console.log(data);
-        if (data.message || data.constituents === null) {
-        i++;
-        } else {
-        const itemObj = {
-            title: data.title,
-            artist: data.constituents[0].name,
-            medium: data.medium,
-            year: data.objectDate,
-            src: data.primaryImage,
-            alt: data.title,
-            tags: data.tags,
-        };
-        items.push(itemObj);
+        const items = [];
+        for (let i = 0; i < monetIds.length; i++) {
+            const result = await fetch(
+            `https://collectionapi.metmuseum.org/public/collection/v1/objects/${monetIds[i]}`
+            );
+            const data = await result.json();
+            console.log(data);
+            if (data.message || data.constituents === null) {
+            i++;
+            } else {
+            const itemObj = {
+                title: data.title,
+                artist: data.constituents[0].name,
+                medium: data.medium,
+                year: data.objectDate,
+                src: data.primaryImage,
+                alt: data.title,
+                tags: data.tags,
+            };
+            items.push(itemObj);
+            }
         }
-    }
-    return items;
+        return items;
     }
 
     export async function getItemsFromGallery() {
-    const result = await query("SELECT * FROM art;");
-    return result.rows;
+        const result = await query("SELECT * FROM art;");
+        return result.rows;
     }
 
-    
-
     export async function getItemById(id) {
-    const result = await query(`SELECT * FROM art WHERE id = $1;`, [id]);
-    return result.rows;
+        const result = await query(`SELECT * FROM art WHERE id = $1;`, [id]);
+        return result.rows;
     }
 
     //CLEAR AWAY ENTRIES WITHOUT A VALID IMAGE
-    export async function deleteItem() {
-    const result = await fetch("http://localhost:3000/api/art");
-    const items = result.json();
-    for (let i = 0; i < items.length; i++) {
-        if (items.src === "") {
-        await query("DELETE FROM art WHERE id = $1;", [items.id]);
-        }
-    }
+    export async function deleteItem(id) {
+        const deletedItem = await query('SELECT * FROM art WHERE id = $1;', [id])
+        await query('DELETE FROM art WHERE id = $1;', [id]);
+        return deletedItem.rows[0];
     }
     //ADDED RESULTS FOR SEARCH "MONET" TO DATABASE
 
